@@ -24,7 +24,8 @@ module.exports = {
       },
       type: {
         allowNull: false,
-        type: Sequelize.ENUM('coffee', 'juice', 'food'),
+        type: Sequelize.ENUM,
+        values: ['coffee', 'juice', 'food'],
       },
       amount: {
         defaultValue: 0,

@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: {
         allowNull: false,
+        unique: true,
         type: DataTypes.STRING,
       },
       price: {
@@ -35,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       type: {
         allowNull: false,
         type: DataTypes.ENUM,
+        values: ['coffee', 'juice', 'food'],
       },
       amount: {
         defaultValue: 0,

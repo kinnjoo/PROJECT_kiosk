@@ -1,4 +1,5 @@
 const express = require('express');
+const indexRoute = require('./routes/indexRoute.js');
 
 class ExpressApp {
   app = express();
@@ -11,9 +12,10 @@ class ExpressApp {
 
   setupMiddlewares = () => {
     this.app.use(express.json());
-    this.app.use('/', (req, res) => {
-      res.send('Hello');
-    });
+    // this.app.use('/', (req, res) => {
+    //   res.send('Hello');
+    // });
+    this.app.use('/api', indexRoute);
   };
 
   startServer = () => {
