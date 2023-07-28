@@ -1,0 +1,31 @@
+{
+  "name": "project_kiosk",
+  "version": "1.0.0",
+  "description": "주특기 플러스 주차 과제 - 키오스크 프로젝트",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettify": "prettier --write *.js **/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kinnjoo/PROJECT_kiosk.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kinnjoo/PROJECT_kiosk/issues"
+  },
+  "homepage": "https://github.com/kinnjoo/PROJECT_kiosk#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mysql2": "^3.5.2",
+    "sequelize": "^6.32.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.0",
+    "sequelize-cli": "^6.6.1"
+  }
+}
