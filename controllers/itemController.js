@@ -25,6 +25,26 @@ class ItemController {
       return res.status(500).json({ message: 'Server Error' });
     }
   };
+
+  // 상품 전체 리스트 조회
+  findAllItemsWithPageNation = async (req, res) => {
+    try {
+      const pageSize = Number(req.query.pageSize ? req.query.pageSize : 10);
+      const pageNum = Number(req.query.pageNum ? req.query.pageNum : 1);
+
+      const itemList = await this.itemService.findAllItemsWithPageNation(
+        pageSize,
+        pageNum
+      );
+
+      if (itemList) {
+        return res.status(200).json({ itemList });
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  };
 }
 
 module.exports = ItemController;

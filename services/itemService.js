@@ -50,6 +50,20 @@ class ItemService {
 
     return true;
   };
+
+  // 상품 리스트 조회
+  findAllItemsWithPageNation = async (pageSize, pageNum) => {
+    if (isNaN(pageSize) || isNaN(pageNum) || pageSize < 1 || pageNum < 1) {
+      (pageSize = 10), (pageNum = 1);
+    }
+
+    const itemList = await this.itemRepository.findAllItemsWithPageNation(
+      pageSize,
+      pageNum
+    );
+
+    return itemList;
+  };
 }
 
 module.exports = ItemService;
