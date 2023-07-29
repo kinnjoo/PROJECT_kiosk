@@ -1,8 +1,9 @@
 const { Items } = require('../models');
 
 class ItemRepository {
-  // DB에서 item name 찾기
-  findOneItemName = async (name) => await Items.findOne({ where: name });
+  // DB에서 item 찾기
+  findOneItemByCondition = async (condition) =>
+    await Items.findOne({ where: condition });
 
   // 상품 추가
   makeItem = async (makeItemData) => await Items.create(makeItemData);
@@ -31,6 +32,9 @@ class ItemRepository {
 
     return itemList;
   };
+
+  // 상품 삭제
+  deleteItemById = async (id) => await Items.destroy({ where: id });
 }
 
 module.exports = ItemRepository;

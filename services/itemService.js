@@ -25,7 +25,9 @@ class ItemService {
       );
     }
 
-    const findItemName = await this.itemRepository.findOneItemName({ name });
+    const findItemName = await this.itemRepository.findOneItemByCondition({
+      name,
+    });
 
     if (findItemName) {
       throw new MakeError(
@@ -99,6 +101,32 @@ class ItemService {
     );
 
     return itemList;
+  };
+
+  // 상품 삭제 유효성 검증
+  validationDeleteItem = async (id) => {
+    const findOneItem = await this.itemRepository.findOneItemByCondition({
+      id,
+    });
+
+    if (!id || !findOneItem) {
+      throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
+    }
+
+    return null;
+  };
+
+  // 상품 삭제
+  deleteItemById = async (id) => {
+    const validationError = await this.validationDeleteItem(id);
+
+    if (validationError) {
+      return validationError;
+    }
+
+    await this.itemRepository.deleteItemById({ id });
+
+    return true;
   };
 }
 

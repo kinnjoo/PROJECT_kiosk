@@ -13,4 +13,7 @@ router.get('/items', itemController.findAllItemsWithPageNation);
 // 상품 리스트 조회(타입별)
 router.get('/items/type', itemController.findAllItemsByTypeWithPageNation);
 
+// 상품 삭제
+router.delete('/items/:id', itemController.deleteItem);
+
 module.exports = router;
