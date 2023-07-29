@@ -26,7 +26,7 @@ class ItemController {
     }
   };
 
-  // 상품 전체 리스트 조회
+  // 상품 리스트 조회(전체)
   findAllItemsWithPageNation = async (req, res) => {
     try {
       const pageSize = Number(req.query.pageSize ? req.query.pageSize : 10);
@@ -41,6 +41,31 @@ class ItemController {
         return res.status(200).json({ itemList });
       }
     } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  };
+
+  // 상품 리스트 조회(타입별)
+  findAllItemsByTypeWithPageNation = async (req, res) => {
+    try {
+      const pageSize = Number(req.query.pageSize ? req.query.pageSize : 10);
+      const pageNum = Number(req.query.pageNum ? req.query.pageNum : 1);
+      const { type } = req.query;
+
+      const itemList = await this.itemService.findAllItemsByTypeWithPageNation(
+        pageSize,
+        pageNum,
+        type
+      );
+
+      if (itemList) {
+        return res.status(200).json({ itemList });
+      }
+    } catch (err) {
+      if (err instanceof MakeError) {
+        return res.status(err.code).json({ message: err.message });
+      }
       console.log(err);
       return res.status(500).json({ message: 'Server Error' });
     }

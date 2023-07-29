@@ -7,7 +7,10 @@ const itemController = new ItemController();
 // 상품 추가
 router.post('/items', itemController.createItem);
 
-// 상품 전체 리스트 조회(+페이지네이션)
+// 상품 리스트 조회(전체)
 router.get('/items', itemController.findAllItemsWithPageNation);
+
+// 상품 리스트 조회(타입별)
+router.get('/items/type', itemController.findAllItemsByTypeWithPageNation);
 
 module.exports = router;
