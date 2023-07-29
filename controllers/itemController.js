@@ -23,7 +23,7 @@ class ItemController {
   };
 
   // 상품 리스트 조회(전체)
-  findAllItemsWithPageNation = async (req, res) => {
+  findAllItems = async (req, res) => {
     try {
       const pageSize = Number(req.query.pageSize ? req.query.pageSize : 10);
       const pageNum = Number(req.query.pageNum ? req.query.pageNum : 1);
@@ -43,7 +43,7 @@ class ItemController {
   };
 
   // 상품 리스트 조회(타입별)
-  findAllItemsByTypeWithPageNation = async (req, res) => {
+  findAllItemsByType = async (req, res) => {
     try {
       const pageSize = Number(req.query.pageSize ? req.query.pageSize : 10);
       const pageNum = Number(req.query.pageNum ? req.query.pageNum : 1);
