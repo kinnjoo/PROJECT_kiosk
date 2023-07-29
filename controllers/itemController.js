@@ -5,16 +5,12 @@ class ItemController {
   itemService = new ItemService();
 
   // 상품 추가
-  createItem = async (req, res) => {
+  makeItem = async (req, res) => {
     try {
       const { name, price, type } = req.body;
-      const createItemData = await this.itemService.createItem(
-        name,
-        price,
-        type
-      );
+      const makeItemData = await this.itemService.makeItem(name, price, type);
 
-      if (createItemData) {
+      if (makeItemData) {
         return res.status(201).json({ message: '상품을 추가하였습니다.' });
       }
     } catch (err) {

@@ -6,7 +6,7 @@ class ItemService {
   itemRepository = new ItemRepository();
 
   // 상품 추가 유효성 검증
-  validationCreateItem = async (name, price, type) => {
+  validationMakeItem = async (name, price, type) => {
     if (!name) {
       throw new MakeError(400, '상품 이름을 입력해주세요.', 'invalid request');
     }
@@ -39,14 +39,14 @@ class ItemService {
   };
 
   // 상품 추가 API
-  createItem = async (name, price, type) => {
-    const validationError = await this.validationCreateItem(name, price, type);
+  makeItem = async (name, price, type) => {
+    const validationError = await this.validationMakeItem(name, price, type);
 
     if (validationError) {
       return validationError;
     }
 
-    await this.itemRepository.createItem({ name, price, type });
+    await this.itemRepository.makeItem({ name, price, type });
 
     return true;
   };

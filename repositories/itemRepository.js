@@ -5,7 +5,7 @@ class ItemRepository {
   findOneItemName = async (name) => await Items.findOne({ where: name });
 
   // 상품 추가
-  createItem = async (createItemData) => await Items.create(createItemData);
+  makeItem = async (makeItemData) => await Items.create(makeItemData);
 
   // 상품 리스트 조회(전체)
   findAllItemsWithPageNation = async (pageSize, pageNum) => {
