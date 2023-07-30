@@ -84,6 +84,30 @@ class ItemController {
       return res.status(500).json({ message: 'Server Error' });
     }
   };
+
+  // 상품 삭제(item의 amount가 0이 아닐 경우)
+  deleteItemCheckAnswer = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { answer } = req.body;
+
+      const deleteItemData = await this.itemService.deleteItemByIdWithAnswer(
+        id,
+        answer
+      );
+
+      if (!deleteItemData) {
+        return res.status(200).json({ message: '상품 삭제를 취소하였습니다.' });
+      }
+      return res.status(200).json({ message: '상품을 삭제하였습니다.' });
+    } catch (err) {
+      if (err instanceof MakeError) {
+        return res.status(err.code).json({ message: err.message });
+      }
+      console.log(err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  };
 }
 
 module.exports = ItemController;

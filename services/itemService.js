@@ -104,13 +104,21 @@ class ItemService {
   };
 
   // 상품 삭제 유효성 검증
-  validationDeleteItem = async (id) => {
+  validationDeleteItemById = async (id) => {
     const findOneItem = await this.itemRepository.findOneItemByCondition({
       id,
     });
 
-    if (!id || !findOneItem) {
+    if (!findOneItem) {
       throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
+    }
+
+    if (findOneItem.amount > 0) {
+      throw new MakeError(
+        400,
+        '현재 수량이 남아있습니다. 삭제하시겠습니까?',
+        'invalid request'
+      );
     }
 
     return null;
@@ -118,7 +126,7 @@ class ItemService {
 
   // 상품 삭제
   deleteItemById = async (id) => {
-    const validationError = await this.validationDeleteItem(id);
+    const validationError = await this.validationDeleteItemById(id);
 
     if (validationError) {
       return validationError;
@@ -126,6 +134,50 @@ class ItemService {
 
     await this.itemRepository.deleteItemById({ id });
 
+    return true;
+  };
+
+  // 상품 삭제 답변 유효성 검증
+  validationDeleteItemByAnswer = async (id, answer) => {
+    if (!answer) {
+      throw new MakeError(400, '삭제 여부를 선택해주세요.', 'invalid request');
+    }
+
+    const findOneItem = await this.itemRepository.findOneItemByCondition({
+      id,
+    });
+
+    if (!findOneItem) {
+      throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
+    }
+
+    if (answer === '예') {
+      return null;
+    }
+
+    if (answer === '아니오') {
+      return false;
+    }
+
+    if (answer !== '예' || answer !== '아니오') {
+      throw new MakeError(400, '잘못된 입력값입니다.', 'invalid request');
+    }
+
+    return null;
+  };
+
+  // 상품 삭제(item의 amount가 0이 아닐 경우)
+  deleteItemByIdWithAnswer = async (id, answer) => {
+    const validationErrorByAnswer = await this.validationDeleteItemByAnswer(
+      id,
+      answer
+    );
+
+    if (validationErrorByAnswer === false) {
+      return false;
+    }
+
+    await this.itemRepository.deleteItemById({ id });
     return true;
   };
 }

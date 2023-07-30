@@ -16,4 +16,7 @@ router.get('/items/type', itemController.findAllItemsByType);
 // 상품 삭제
 router.delete('/items/:id', itemController.deleteItem);
 
+// 상품 삭제(item의 amount가 0이 아닐 경우)
+router.delete('/answer/items/:id', itemController.deleteItemCheckAnswer);
+
 module.exports = router;
