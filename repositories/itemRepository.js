@@ -35,6 +35,10 @@ class ItemRepository {
 
   // 상품 삭제
   deleteItemById = async (id) => await Items.destroy({ where: id });
+
+  // 상품 수정
+  modifyItemById = async (modifyData, id) =>
+    await Items.update(modifyData, { where: id });
 }
 
 module.exports = ItemRepository;

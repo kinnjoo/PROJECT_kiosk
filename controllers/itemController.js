@@ -104,6 +104,23 @@ class ItemController {
       return res.status(500).json({ message: 'Server Error' });
     }
   };
+
+  // 상품 수정
+  modifyItem = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, price } = req.body;
+
+      await this.itemService.modifyItem(id, name, price);
+      return res.status(200).json({ message: '상품을 수정했습니다.' });
+    } catch (err) {
+      if (err instanceof MakeError) {
+        return res.status(err.code).json({ message: err.message });
+      }
+      console.log(err);
+      return res.status(500).json({ message: 'Server Error' });
+    }
+  };
 }
 
 module.exports = ItemController;

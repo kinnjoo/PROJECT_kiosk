@@ -160,6 +160,33 @@ class ItemService {
     await this.itemRepository.deleteItemById({ id });
     return true;
   };
+
+  // 상품 수정 유효성 검증
+  validationModifyItem = async (id, name, price) => {
+    if (!name) {
+      throw new MakeError(400, '이름을 입력해주세요', 'invalid request');
+    }
+
+    if (price <= 0) {
+      throw new MakeError(400, '알맞은 가격을 입력해주세요', 'invalid request');
+    }
+
+    const findOneItem = await this.itemRepository.findOneItemByCondition({
+      id,
+    });
+    if (!findOneItem) {
+      throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
+    }
+
+    return null;
+  };
+
+  // 상품 수정
+  modifyItem = async (id, name, price) => {
+    await this.validationModifyItem(id, name, price);
+    await this.itemRepository.modifyItemById({ name, price }, { id });
+    return true;
+  };
 }
 
 module.exports = ItemService;

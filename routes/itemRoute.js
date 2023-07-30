@@ -19,4 +19,7 @@ router.delete('/items/:id', itemController.deleteItem);
 // 상품 삭제(item의 amount가 0이 아닐 경우)
 router.delete('/answer/items/:id', itemController.deleteItemCheckAnswer);
 
+// 상품 수정
+router.put('/items/:id', itemController.modifyItem);
+
 module.exports = router;
