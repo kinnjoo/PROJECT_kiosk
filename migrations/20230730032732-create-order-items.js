@@ -23,8 +23,9 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       state: {
-        defaultValue: 0,
-        type: Sequelize.INTEGER,
+        defaultValue: 'ordered',
+        type: Sequelize.ENUM,
+        values: ['ordered', 'pending', 'completed', 'canceled'],
       },
       createdAt: {
         allowNull: false,

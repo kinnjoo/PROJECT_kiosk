@@ -37,8 +37,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
       },
       state: {
-        defaultValue: 0,
-        type: DataTypes.INTEGER,
+        defaultValue: 'ordered',
+        type: DataTypes.ENUM,
+        values: ['ordered', 'pending', 'completed', 'canceled'],
       },
       createdAt: {
         allowNull: false,

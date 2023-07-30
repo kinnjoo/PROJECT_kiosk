@@ -5,10 +5,10 @@ const itemType = {
 };
 
 const orderItemState = {
-  ORDERED: 0,
-  PENDING: 1,
-  COMPLETED: 2,
-  CANCELED: 3,
+  ORDERED: 'ordered',
+  PENDING: 'pending',
+  COMPLETED: 'completed',
+  CANCELED: 'canceled',
 };
 
 module.exports = { itemType, orderItemState };
