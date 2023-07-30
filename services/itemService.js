@@ -16,7 +16,6 @@ class ItemService {
     }
 
     const values = Object.values(Enum.itemType);
-
     if (!type || !values.includes(type)) {
       throw new MakeError(
         400,
@@ -28,7 +27,6 @@ class ItemService {
     const findItemName = await this.itemRepository.findOneItemByCondition({
       name,
     });
-
     if (findItemName) {
       throw new MakeError(
         400,
@@ -42,14 +40,8 @@ class ItemService {
 
   // 상품 추가 API
   makeItem = async (name, price, type) => {
-    const validationError = await this.validationMakeItem(name, price, type);
-
-    if (validationError) {
-      return validationError;
-    }
-
+    await this.validationMakeItem(name, price, type);
     await this.itemRepository.makeItem({ name, price, type });
-
     return true;
   };
 
@@ -70,7 +62,6 @@ class ItemService {
   // 상품 타입별 조회 유효성 검증
   validationFindAllItemsByType = async (type) => {
     const values = Object.values(Enum.itemType);
-
     if (!type || !values.includes(type)) {
       throw new MakeError(
         400,
@@ -88,11 +79,7 @@ class ItemService {
       (pageSize = 10), (pageNum = 1);
     }
 
-    const validationError = await this.validationFindAllItemsByType(type);
-
-    if (validationError) {
-      return validationError;
-    }
+    await this.validationFindAllItemsByType(type);
 
     const itemList = await this.itemRepository.findAllItemsByTypeWithPageNation(
       pageSize,
@@ -126,14 +113,8 @@ class ItemService {
 
   // 상품 삭제
   deleteItemById = async (id) => {
-    const validationError = await this.validationDeleteItemById(id);
-
-    if (validationError) {
-      return validationError;
-    }
-
+    await this.validationDeleteItemById(id);
     await this.itemRepository.deleteItemById({ id });
-
     return true;
   };
 
@@ -146,7 +127,6 @@ class ItemService {
     const findOneItem = await this.itemRepository.findOneItemByCondition({
       id,
     });
-
     if (!findOneItem) {
       throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
     }
