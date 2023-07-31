@@ -5,6 +5,12 @@ const OrderItemController = require('../controllers/orderitemController.js');
 const orderitemController = new OrderItemController();
 
 // 상품 발주
-router.post('/orderItems/:itemId', orderitemController.makeOrder);
+router.post('/items/:itemId/orderItems', orderitemController.makeOrder);
+
+// 발주 상태 수정
+router.put(
+  '/items/:itemId/orderItems/:id',
+  orderitemController.modifyOrderItemState
+);
 
 module.exports = router;
