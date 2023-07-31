@@ -124,6 +124,10 @@ class ItemService {
       throw new MakeError(400, '삭제 여부를 선택해주세요.', 'invalid request');
     }
 
+    if (answer !== '예' && answer !== '아니오') {
+      throw new MakeError(400, '잘못된 입력값입니다.', 'invalid request');
+    }
+
     const findOneItem = await this.itemRepository.findOneItemByCondition({
       id,
     });
@@ -131,29 +135,14 @@ class ItemService {
       throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
     }
 
-    if (answer === '예') {
-      return null;
-    }
-
-    if (answer === '아니오') {
-      return false;
-    }
-
-    if (answer !== '예' || answer !== '아니오') {
-      throw new MakeError(400, '잘못된 입력값입니다.', 'invalid request');
-    }
-
     return null;
   };
 
   // 상품 삭제(item의 amount가 0이 아닐 경우)
   deleteItemByIdWithAnswer = async (id, answer) => {
-    const validationErrorByAnswer = await this.validationDeleteItemByAnswer(
-      id,
-      answer
-    );
+    await this.validationDeleteItemByAnswer(id, answer);
 
-    if (validationErrorByAnswer === false) {
+    if (answer === '아니오') {
       return false;
     }
 
