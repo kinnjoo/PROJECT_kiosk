@@ -51,23 +51,46 @@ class OrderItemService {
         'invalid request'
       );
     }
+    const findItemData = await this.itemRepository.findOneItemByCondition({
+      id: itemId,
+    });
 
-    const orderState = findOrderItemData.state;
-
-    if (orderState === 'ordered' && state === 'completed') {
+    if (findOrderItemData.state === 'ordered' && state === 'completed') {
       throw new MakeError(
         400,
         "현 발주상태가 'pending'일때만 가능합니다.",
         'invalid request'
       );
     }
+    const itemAmount = findItemData.amount;
+    const orderAmount = findOrderItemData.amount;
 
-    if (orderState === 'pending' && state === 'completed') {
-      const orderAmount = findOrderItemData.amount;
-      return await this.orderItemRepository.updateOrderItemAmount(
+    if (findOrderItemData.state === 'pending' && state === 'completed') {
+      return await this.orderItemRepository.modifyQuantityWhenCompleted(
         itemId,
         id,
         state,
+        itemAmount,
+        orderAmount
+      );
+    }
+
+    if (
+      findOrderItemData.state === 'completed' &&
+      findOrderItemData.state !== state
+    ) {
+      if (orderAmount >= itemAmount) {
+        throw new MakeError(
+          400,
+          '현재 수량이 발주 수량보다 적어 발주 취소가 불가능합니다.',
+          'invalid request'
+        );
+      }
+      return await this.orderItemRepository.modifyQuantityWhenNonCompleted(
+        itemId,
+        id,
+        state,
+        itemAmount,
         orderAmount
       );
     }
@@ -76,9 +99,6 @@ class OrderItemService {
   };
 
   // 발주 상태 수정
-  // Completed → Canceled or Pending or Ordered
-  // : 주문한 수량보다 현재 수량이 적을 경우 `현재 수량이 발주 수량보다 적어 발주 취소가 불가능합니다.` 에러메세지
-  // : 가능할경우 트랜잭션을 적용해 상태변경과 동시에 상품의 amount를 감소
   modifyOrderItemState = async (itemId, id, state) => {
     await this.validationModifyOrderItemState(itemId, id, state);
     await this.orderItemRepository.modifyOrderItemState({ state }, { id });
