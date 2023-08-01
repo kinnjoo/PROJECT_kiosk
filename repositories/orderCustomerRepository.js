@@ -1,28 +1,36 @@
 const { Items, OrderCustomers, ItemOrderCustomers } = require('../models');
 
 class OrderCustomerRepository {
-  // 상품 가격 찾기
-  calculatePrice = async (itemId) => {
+  // Items 데이터 찾기
+  findOneItemPrice = async (itemId, amount) => {
     const findItemData = await Items.findOne({ where: { id: itemId } });
-    const price = findItemData.price;
-
+    const price = findItemData.price * amount;
     return price;
   };
 
-  // 상품 주문
-  makeOrderCustomer = async (itemId, amount, price) => {
+  // 상품 찾기 - ItemOrderCustomers
+  findAllItemOrderCustomerData = async (orderCustomerId) =>
+    await ItemOrderCustomers.findAll({
+      where: {
+        orderCustomerId,
+      },
+    });
+
+  // 상품 주문 - OrderCustomers 테이블
+  makeOrderCustomer = async () => {
     const orderCustomerData = await OrderCustomers.create();
     const orderCustomerId = orderCustomerData.id;
+    return orderCustomerId;
+  };
 
-    const itemOrderCustomerData = await ItemOrderCustomers.create({
+  // 상품 주문 - ItemOrderCustomers 테이블
+  makeItemOrderCustomer = async (itemId, orderCustomerId, amount, price) =>
+    await ItemOrderCustomers.create({
       itemId,
       orderCustomerId,
       amount,
       price,
     });
-
-    return itemOrderCustomerData;
-  };
 }
 
 module.exports = OrderCustomerRepository;

@@ -5,6 +5,6 @@ const OrderCustomerController = require('../controllers/orderCustomerController.
 const orderCustomerController = new OrderCustomerController();
 
 // 상품 주문
-router.post('/items/:itemId/orderCustomers', orderCustomerController.makeOrder);
+router.post('/orderCustomers', orderCustomerController.makeOrder);
 
 module.exports = router;

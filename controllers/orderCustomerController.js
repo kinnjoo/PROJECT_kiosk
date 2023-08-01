@@ -7,13 +7,12 @@ class OrderCustomerController {
   // 상품 주문
   makeOrder = async (req, res) => {
     try {
-      const { itemId } = req.params;
-      const { amount } = req.body;
+      const { orders } = req.body;
 
-      const itemOrderCustomerData =
-        await this.orderCustomerService.makeOrderCustomer(itemId, amount);
+      const totalPrice = await this.orderCustomerService.makeOrderCustomer(
+        orders
+      );
 
-      const totalPrice = itemOrderCustomerData.price;
       return res.status(200).json({
         message: `결제금액은 총 ${totalPrice.toLocaleString()}원입니다.`,
       });
