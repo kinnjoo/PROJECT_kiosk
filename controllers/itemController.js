@@ -1,5 +1,5 @@
 const ItemService = require('../services/itemService.js');
-const MakeError = require('../untils/makeErrorUtil.js');
+const MakeError = require('../utils/makeErrorUtil.js');
 
 class ItemController {
   itemService = new ItemService();

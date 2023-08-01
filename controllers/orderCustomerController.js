@@ -1,5 +1,5 @@
 const OrderCustomerService = require('../services/orderCustomerService.js');
-const MakeError = require('../untils/makeErrorUtil.js');
+const MakeError = require('../utils/makeErrorUtil.js');
 
 class OrderCustomerController {
   orderCustomerService = new OrderCustomerService();
@@ -10,10 +10,8 @@ class OrderCustomerController {
       const { itemId } = req.params;
       const { amount } = req.body;
 
-      const itemOrderCustomerData = await this.orderCustomerService.makeOrder(
-        itemId,
-        amount
-      );
+      const itemOrderCustomerData =
+        await this.orderCustomerService.makeOrderCustomer(itemId, amount);
 
       const totalPrice = itemOrderCustomerData.price;
       return res.status(200).json({

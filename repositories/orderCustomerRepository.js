@@ -10,7 +10,7 @@ class OrderCustomerRepository {
   };
 
   // 상품 주문
-  makeOrder = async (itemId, amount, price) => {
+  makeOrderCustomer = async (itemId, amount, price) => {
     const orderCustomerData = await OrderCustomers.create();
     const orderCustomerId = orderCustomerData.id;
 

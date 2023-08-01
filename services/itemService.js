@@ -1,5 +1,5 @@
 const ItemRepository = require('../repositories/itemRepository.js');
-const MakeError = require('../untils/makeErrorUtil.js');
+const MakeError = require('../utils/makeErrorUtil.js');
 const Enum = require('../config/enum.js');
 
 class ItemService {
