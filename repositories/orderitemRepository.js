@@ -28,11 +28,10 @@ class OrderItemRepository {
         { amount: updatedAmount },
         {
           where: { id: itemId },
-        }
+        },
+        { transaction }
       ),
-        { transaction };
-
-      await OrderItems.update({ state }, { where: { id } }, { transaction });
+        await OrderItems.update({ state }, { where: { id } }, { transaction });
       await transaction.commit();
     } catch (err) {
       await transaction.rollback();
@@ -59,11 +58,10 @@ class OrderItemRepository {
         { amount: updatedAmount },
         {
           where: { id: itemId },
-        }
+        },
+        { transaction }
       ),
-        { transaction };
-
-      await OrderItems.update({ state }, { where: { id } }, { transaction });
+        await OrderItems.update({ state }, { where: { id } }, { transaction });
       await transaction.commit();
     } catch (err) {
       await transaction.rollback();

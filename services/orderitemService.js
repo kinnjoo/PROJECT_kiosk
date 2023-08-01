@@ -51,6 +51,7 @@ class OrderItemService {
         'invalid request'
       );
     }
+
     const findItemData = await this.itemRepository.findOneItemByCondition({
       id: itemId,
     });
