@@ -1,4 +1,9 @@
-const { Items, OrderCustomers, ItemOrderCustomers } = require('../models');
+const {
+  Items,
+  OrderCustomers,
+  ItemOrderCustomers,
+  sequelize,
+} = require('../models');
 
 class OrderCustomerRepository {
   // Items 데이터 찾기
@@ -8,13 +13,18 @@ class OrderCustomerRepository {
     return price;
   };
 
-  // 상품 찾기 - ItemOrderCustomers
-  findAllItemOrderCustomerData = async (orderCustomerId) =>
-    await ItemOrderCustomers.findAll({
+  // totalPrice
+  findTotalPrice = async (orderCustomerId) => {
+    const totalPriceData = await ItemOrderCustomers.findAll({
       where: {
         orderCustomerId,
       },
+      attributes: [[sequelize.fn('sum', sequelize.col('price')), 'totalPrice']],
     });
+    const totalPrice = totalPriceData[0].dataValues.totalPrice;
+
+    return totalPrice;
+  };
 
   // 상품 주문 - OrderCustomers 테이블
   makeOrderCustomer = async () => {

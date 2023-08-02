@@ -7,10 +7,10 @@ class OrderCustomerController {
   // 상품 주문
   makeOrder = async (req, res) => {
     try {
-      const { orders } = req.body;
+      const { order } = req.body;
 
       const totalPrice = await this.orderCustomerService.makeOrderCustomer(
-        orders
+        order
       );
 
       return res.status(200).json({

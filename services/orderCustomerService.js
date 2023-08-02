@@ -24,13 +24,13 @@ class OrderCustomerService {
   };
 
   // 상품 주문
-  makeOrderCustomer = async (orders) => {
+  makeOrderCustomer = async (order) => {
     const orderCustomerId =
       await this.orderCustomerRepository.makeOrderCustomer();
 
-    for (let data = 0; data < orders.length; data++) {
-      const itemId = orders[data].itemId;
-      const amount = orders[data].amount;
+    for (let data = 0; data < order.length; data++) {
+      const itemId = order[data].itemId;
+      const amount = order[data].amount;
 
       await this.validationMakeOrderCustomer(itemId, amount);
 
@@ -47,18 +47,8 @@ class OrderCustomerService {
       );
     }
 
-    const itemOrderCustomerData =
-      await this.orderCustomerRepository.findAllItemOrderCustomerData(
-        orderCustomerId
-      );
-
-    const allPrices = itemOrderCustomerData.map(
-      (itemOrderCustomer) => itemOrderCustomer.dataValues.price
-    );
-
-    const totalPrice = allPrices.reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
-      0
+    const totalPrice = await this.orderCustomerRepository.findTotalPrice(
+      orderCustomerId
     );
 
     return totalPrice;
