@@ -1,4 +1,4 @@
-const { Items } = require('../models');
+const { Options, Items } = require('../models');
 
 class ItemRepository {
   // DB에서 item 찾기
@@ -7,6 +7,10 @@ class ItemRepository {
 
   // 상품 추가
   makeItem = async (makeItemData) => await Items.create(makeItemData);
+
+  // optionId 찾기
+  findOneOptionById = async (optionId) =>
+    await Options.findOne({ where: { id: optionId } });
 
   // 상품 리스트 조회(전체)
   findAllItemsWithPageNation = async (pageSize, pageNum) => {

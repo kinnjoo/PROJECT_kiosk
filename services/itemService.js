@@ -6,7 +6,11 @@ class ItemService {
   itemRepository = new ItemRepository();
 
   // 상품 추가 유효성 검증
-  validationMakeItem = async (name, price, type) => {
+  validationMakeItem = async (optionId, name, price, type) => {
+    if (!optionId) {
+      throw new MakeError(400, '상품의 옵션을 입력해주세요', 'invalid request');
+    }
+
     if (!name) {
       throw new MakeError(400, '상품 이름을 입력해주세요.', 'invalid request');
     }
@@ -35,13 +39,18 @@ class ItemService {
       );
     }
 
+    const findOption = await this.itemRepository.findOneOptionById(optionId);
+    if (!findOption) {
+      throw new MakeError(400, '존재하지 않는 옵션입니다.', 'invalid request');
+    }
+
     return null;
   };
 
   // 상품 추가 API
-  makeItem = async (name, price, type) => {
-    await this.validationMakeItem(name, price, type);
-    await this.itemRepository.makeItem({ name, price, type });
+  makeItem = async (optionId, name, price, type) => {
+    await this.validationMakeItem(optionId, name, price, type);
+    await this.itemRepository.makeItem({ optionId, name, price, type });
     return true;
   };
 

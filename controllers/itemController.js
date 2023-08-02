@@ -7,9 +7,9 @@ class ItemController {
   // 상품 추가
   makeItem = async (req, res) => {
     try {
-      const { name, price, type } = req.body;
+      const { optionId, name, price, type } = req.body;
 
-      await this.itemService.makeItem(name, price, type);
+      await this.itemService.makeItem(optionId, name, price, type);
       return res.status(201).json({ message: '상품을 추가하였습니다.' });
     } catch (err) {
       if (err instanceof MakeError) {
