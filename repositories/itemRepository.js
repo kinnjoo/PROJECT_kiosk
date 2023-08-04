@@ -16,6 +16,10 @@ class ItemRepository {
   findAllItemsWithPagination = async (pageSize, pageNum) => {
     const itemList = await Items.findAll({
       attributes: ['id', 'optionId', 'name', 'price', 'type', 'amount'],
+      include: {
+        model: Options,
+        attributes: ['extraPrice', 'shotPrice', 'hot'],
+      },
       limit: pageSize,
       offset: (pageNum - 1) * pageSize,
       order: [['createdAt', 'DESC']],
@@ -29,6 +33,10 @@ class ItemRepository {
     const itemList = await Items.findAll({
       where: { type },
       attributes: ['id', 'optionId', 'name', 'price', 'amount'],
+      include: {
+        model: Options,
+        attributes: ['extraPrice', 'shotPrice', 'hot'],
+      },
       limit: pageSize,
       offset: (pageNum - 1) * pageSize,
       order: [['createdAt', 'DESC']],
