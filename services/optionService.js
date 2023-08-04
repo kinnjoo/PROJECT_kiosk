@@ -1,8 +1,10 @@
 const OptionRepository = require('../repositories/optionRepository.js');
+const OptionsCaching = require('../cache.js');
 const MakeError = require('../utils/makeErrorUtil.js');
 
 class OptionService {
   optionRepository = new OptionRepository();
+  optionsCaching = new OptionsCaching();
 
   // 옵션 추가 유효성 검증
   validationMakeOption = async (extraPrice, shotPrice, hot) => {
@@ -26,9 +28,16 @@ class OptionService {
   // 옵션 추가
   makeOption = async (extraPrice, shotPrice, hot) => {
     await this.validationMakeOption(extraPrice, shotPrice, hot);
-    await this.optionRepository.makeOption({ extraPrice, shotPrice, hot });
 
-    return true;
+    const makeOption = await this.optionRepository.makeOption({
+      extraPrice,
+      shotPrice,
+      hot,
+    });
+
+    if (makeOption) {
+      return await this.optionsCaching.setCachedOptions();
+    }
   };
 }
 

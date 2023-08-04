@@ -25,7 +25,7 @@ class ExpressApp {
     });
   };
 
-  cacheOptionsData = async () => await this.optionsCaching.setCachedData();
+  cacheOptionsData = async () => await this.optionsCaching.setCachedOptions();
 }
 
 new ExpressApp();

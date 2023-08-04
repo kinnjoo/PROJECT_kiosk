@@ -1,12 +1,11 @@
 const nodeCache = require('node-cache');
-
 const OptionRepository = require('./repositories/optionRepository.js');
 
 class OptionsCaching {
   cache = new nodeCache({ stdTTL: 3600, checkperiod: 600 }); // default stdTTL: 0, checkperiod: 600
   optionRepository = new OptionRepository();
 
-  setCachedData = async () => {
+  setCachedOptions = async () => {
     try {
       const options = await this.optionRepository.findAllOptions();
       this.cache.set('options', options);
