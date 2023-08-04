@@ -22,7 +22,7 @@ class OptionService {
       throw new MakeError(400, '잘못된 형식입니다.');
     }
 
-    return null;
+    return;
   };
 
   // 옵션 추가
@@ -38,15 +38,30 @@ class OptionService {
     if (makeOption) {
       return await this.optionsCaching.setCachedOptions();
     }
+
+    return true;
+  };
+
+  // 옵션 삭제 유효성 검증
+  validationDeleteOption = async (id) => {
+    const findOptionData = await this.optionRepository.findOneOption({ id });
+    if (!findOptionData) {
+      throw new MakeError(400, '존재하지 않는 옵션입니다.');
+    }
+
+    return;
   };
 
   // 옵션 삭제
   deleteOption = async (id) => {
-    const deleteOption = await this.optionRepository.deleteOption({ id });
+    await this.validationDeleteOption(id);
 
+    const deleteOption = await this.optionRepository.deleteOption({ id });
     if (deleteOption) {
-      return await this.optionsCaching.setCachedOptions();
+      await this.optionsCaching.setCachedOptions();
     }
+
+    return true;
   };
 }
 

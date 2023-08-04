@@ -7,7 +7,7 @@ class OptionsCaching {
 
   setCachedOptions = async () => {
     try {
-      const options = await this.optionRepository.findAllOptions();
+      const options = await this.optionRepository.getAllOptions();
       this.cache.set('options', options);
       console.log('옵션 데이터 캐싱 성공');
     } catch (err) {
