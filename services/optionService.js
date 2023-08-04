@@ -7,11 +7,7 @@ class OptionService {
   // 옵션 추가 유효성 검증
   validationMakeOption = async (extraPrice, shotPrice, hot) => {
     if (!extraPrice || !shotPrice || !hot) {
-      throw new MakeError(
-        400,
-        '모든 항목을 입력해주셔야 합니다.',
-        'invalid request'
-      );
+      throw new MakeError(400, '모든 항목을 입력해주셔야 합니다.');
     }
 
     if (
@@ -21,7 +17,7 @@ class OptionService {
       hot < 0 ||
       hot > 1
     ) {
-      throw new MakeError(400, '잘못된 형식입니다.', 'invalid request');
+      throw new MakeError(400, '잘못된 형식입니다.');
     }
 
     return null;

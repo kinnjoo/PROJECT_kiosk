@@ -1,8 +1,7 @@
 class MakeError extends Error {
-  constructor(code, message, name) {
+  constructor(code, message) {
     super(message);
     this.code = code;
-    this.name = name;
     Error.captureStackTrace(this, this.constructor);
   }
 }

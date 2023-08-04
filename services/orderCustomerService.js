@@ -9,7 +9,7 @@ class OrderCustomerService {
   // 상품 주문 유효성 검증
   validationMakeOrderCustomer = async (itemId, amount) => {
     if (!amount) {
-      throw new MakeError(400, '수량을 입력해주세요', 'invalid request');
+      throw new MakeError(400, '수량을 입력해주세요');
     }
 
     const findItemData = await this.itemRepository.findOneItemByCondition({
@@ -17,7 +17,7 @@ class OrderCustomerService {
     });
 
     if (!findItemData) {
-      throw new MakeError(400, '존재 하지 않는 상품입니다.', 'invalid request');
+      throw new MakeError(400, '존재 하지 않는 상품입니다.');
     }
 
     return null;
@@ -57,15 +57,11 @@ class OrderCustomerService {
   // 상품 주문 수정 유효성 검증
   validationModifyOrderCustomer = async (orderCustomerId, orderState) => {
     if (!orderState) {
-      throw new MakeError(400, '주문 상태를 입력해주세요', 'invalid request');
+      throw new MakeError(400, '주문 상태를 입력해주세요');
     }
 
     if (orderState !== '완료' && orderState !== '취소') {
-      throw new MakeError(
-        400,
-        '알맞은 주문 상태를 입력해주세요',
-        'invalid request'
-      );
+      throw new MakeError(400, '알맞은 주문 상태를 입력해주세요');
     }
 
     const findOrderCustomerData =
@@ -74,19 +70,11 @@ class OrderCustomerService {
       );
 
     if (!findOrderCustomerData) {
-      throw new MakeError(
-        400,
-        '존재 하지 않는 주문 내역입니다.',
-        'invalid request'
-      );
+      throw new MakeError(400, '존재 하지 않는 주문 내역입니다.');
     }
 
     if (findOrderCustomerData.state === 1 && orderState === '취소') {
-      throw new MakeError(
-        400,
-        '완료된 주문은 취소할 수 없습니다',
-        'invalid request'
-      );
+      throw new MakeError(400, '완료된 주문은 취소할 수 없습니다');
     }
 
     return null;

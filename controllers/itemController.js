@@ -26,7 +26,7 @@ class ItemController {
       const pageSize = Number(req.query.pageSize ? req.query.pageSize : 10);
       const pageNum = Number(req.query.pageNum ? req.query.pageNum : 1);
 
-      const itemList = await this.itemService.findAllItemsWithPageNation(
+      const itemList = await this.itemService.findAllItemsWithPagination(
         pageSize,
         pageNum
       );
@@ -47,7 +47,7 @@ class ItemController {
       const pageNum = Number(req.query.pageNum ? req.query.pageNum : 1);
       const { type } = req.query;
 
-      const itemList = await this.itemService.findAllItemsByTypeWithPageNation(
+      const itemList = await this.itemService.findAllItemsByTypeWithPagination(
         pageSize,
         pageNum,
         type

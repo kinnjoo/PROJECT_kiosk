@@ -10,14 +10,14 @@ class OrderItemService {
   // 상품 발주 유효성 검증
   validationMakeOrder = async (itemId, amount) => {
     if (!amount) {
-      throw new MakeError(400, '발주 수량을 입력해주세요.', 'invalid request');
+      throw new MakeError(400, '발주 수량을 입력해주세요.');
     }
 
     const findItemData = await this.itemRepository.findOneItemByCondition({
       id: itemId,
     });
     if (!findItemData) {
-      throw new MakeError(400, '존재하지 않는 상품입니다.', 'invalid request');
+      throw new MakeError(400, '존재하지 않는 상품입니다.');
     }
 
     return null;
@@ -35,7 +35,7 @@ class OrderItemService {
     const values = Object.values(Enum.orderItemState);
 
     if (!state || !values.includes(state)) {
-      throw new MakeError(400, '잘못된 발주 상태입니다.', 'invalid request');
+      throw new MakeError(400, '잘못된 발주 상태입니다.');
     }
 
     const findOrderItemData =
@@ -45,11 +45,7 @@ class OrderItemService {
       });
 
     if (!findOrderItemData) {
-      throw new MakeError(
-        400,
-        '존재하지 않는 상품 발주 내역입니다.',
-        'invalid request'
-      );
+      throw new MakeError(400, '존재하지 않는 상품 발주 내역입니다.');
     }
 
     const findItemData = await this.itemRepository.findOneItemByCondition({
@@ -57,11 +53,7 @@ class OrderItemService {
     });
 
     if (findOrderItemData.state === 'ordered' && state === 'completed') {
-      throw new MakeError(
-        400,
-        "현 발주상태가 'pending'일때만 가능합니다.",
-        'invalid request'
-      );
+      throw new MakeError(400, "현 발주상태가 'pending'일때만 가능합니다.");
     }
     const itemAmount = findItemData.amount;
     const orderAmount = findOrderItemData.amount;
@@ -83,8 +75,7 @@ class OrderItemService {
       if (orderAmount >= itemAmount) {
         throw new MakeError(
           400,
-          '현재 수량이 발주 수량보다 적어 발주 취소가 불가능합니다.',
-          'invalid request'
+          '현재 수량이 발주 수량보다 적어 발주 취소가 불가능합니다.'
         );
       }
       return await this.orderItemRepository.modifyQuantityWhenNonCompleted(

@@ -8,40 +8,32 @@ class ItemService {
   // 상품 추가 유효성 검증
   validationMakeItem = async (optionId, name, price, type) => {
     if (!optionId) {
-      throw new MakeError(400, '상품의 옵션을 입력해주세요', 'invalid request');
+      throw new MakeError(400, '상품의 옵션을 입력해주세요');
     }
 
     if (!name) {
-      throw new MakeError(400, '상품 이름을 입력해주세요.', 'invalid request');
+      throw new MakeError(400, '상품 이름을 입력해주세요.');
     }
 
     if (!price) {
-      throw new MakeError(400, '상품 가격을 입력해주세요.', 'invalid request');
+      throw new MakeError(400, '상품 가격을 입력해주세요.');
     }
 
     const values = Object.values(Enum.itemType);
     if (!type || !values.includes(type)) {
-      throw new MakeError(
-        400,
-        '알맞은 상품 타입을 선택해주세요.',
-        'invalid request'
-      );
+      throw new MakeError(400, '알맞은 상품 타입을 선택해주세요.');
     }
 
     const findItemName = await this.itemRepository.findOneItemByCondition({
       name,
     });
     if (findItemName) {
-      throw new MakeError(
-        400,
-        '이미 존재하는 상품 이름입니다.',
-        'invalid request'
-      );
+      throw new MakeError(400, '이미 존재하는 상품 이름입니다.');
     }
 
     const findOption = await this.itemRepository.findOneOptionById(optionId);
     if (!findOption) {
-      throw new MakeError(400, '존재하지 않는 옵션입니다.', 'invalid request');
+      throw new MakeError(400, '존재하지 않는 옵션입니다.');
     }
 
     return null;
@@ -55,12 +47,12 @@ class ItemService {
   };
 
   // 상품 리스트 조회(전체)
-  findAllItemsWithPageNation = async (pageSize, pageNum) => {
+  findAllItemsWithPagination = async (pageSize, pageNum) => {
     if (isNaN(pageSize) || isNaN(pageNum) || pageSize < 1 || pageNum < 1) {
       (pageSize = 10), (pageNum = 1);
     }
 
-    const itemList = await this.itemRepository.findAllItemsWithPageNation(
+    const itemList = await this.itemRepository.findAllItemsWithPagination(
       pageSize,
       pageNum
     );
@@ -72,25 +64,21 @@ class ItemService {
   validationFindAllItemsByType = async (type) => {
     const values = Object.values(Enum.itemType);
     if (!type || !values.includes(type)) {
-      throw new MakeError(
-        400,
-        '알맞은 상품 타입을 선택해주세요.',
-        'invalid request'
-      );
+      throw new MakeError(400, '알맞은 상품 타입을 선택해주세요.');
     }
 
     return null;
   };
 
   // 상품 리스트 조회(타입별)
-  findAllItemsByTypeWithPageNation = async (pageSize, pageNum, type) => {
+  findAllItemsByTypeWithPagination = async (pageSize, pageNum, type) => {
     if (isNaN(pageSize) || isNaN(pageNum) || pageSize < 1 || pageNum < 1) {
       (pageSize = 10), (pageNum = 1);
     }
 
     await this.validationFindAllItemsByType(type);
 
-    const itemList = await this.itemRepository.findAllItemsByTypeWithPageNation(
+    const itemList = await this.itemRepository.findAllItemsByTypeWithPagination(
       pageSize,
       pageNum,
       type
@@ -106,15 +94,11 @@ class ItemService {
     });
 
     if (!findOneItem) {
-      throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
+      throw new MakeError(400, '잘못된 id 값입니다.');
     }
 
     if (findOneItem.amount > 0) {
-      throw new MakeError(
-        400,
-        '현재 수량이 남아있습니다. 삭제하시겠습니까?',
-        'invalid request'
-      );
+      throw new MakeError(400, '현재 수량이 남아있습니다. 삭제하시겠습니까?');
     }
 
     return null;
@@ -130,18 +114,18 @@ class ItemService {
   // 상품 삭제 답변 유효성 검증
   validationDeleteItemByAnswer = async (id, answer) => {
     if (!answer) {
-      throw new MakeError(400, '삭제 여부를 선택해주세요.', 'invalid request');
+      throw new MakeError(400, '삭제 여부를 선택해주세요.');
     }
 
     if (answer !== '예' && answer !== '아니오') {
-      throw new MakeError(400, '잘못된 입력값입니다.', 'invalid request');
+      throw new MakeError(400, '잘못된 입력값입니다.');
     }
 
     const findOneItem = await this.itemRepository.findOneItemByCondition({
       id,
     });
     if (!findOneItem) {
-      throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
+      throw new MakeError(400, '잘못된 id 값입니다.');
     }
 
     return null;
@@ -162,18 +146,18 @@ class ItemService {
   // 상품 수정 유효성 검증
   validationModifyItem = async (id, name, price) => {
     if (!name) {
-      throw new MakeError(400, '이름을 입력해주세요', 'invalid request');
+      throw new MakeError(400, '이름을 입력해주세요');
     }
 
     if (price <= 0) {
-      throw new MakeError(400, '알맞은 가격을 입력해주세요', 'invalid request');
+      throw new MakeError(400, '알맞은 가격을 입력해주세요');
     }
 
     const findOneItem = await this.itemRepository.findOneItemByCondition({
       id,
     });
     if (!findOneItem) {
-      throw new MakeError(400, '잘못된 id 값입니다.', 'invalid request');
+      throw new MakeError(400, '잘못된 id 값입니다.');
     }
 
     return null;
