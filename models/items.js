@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
           model: 'Options',
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       name: {
         allowNull: false,

@@ -30,8 +30,9 @@ class OrderItemRepository {
           where: { id: itemId },
         },
         { transaction }
-      ),
-        await OrderItems.update({ state }, { where: { id } }, { transaction });
+      );
+
+      await OrderItems.update({ state }, { where: { id } }, { transaction });
       await transaction.commit();
     } catch (err) {
       await transaction.rollback();

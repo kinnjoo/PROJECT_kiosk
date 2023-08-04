@@ -39,6 +39,15 @@ class OptionService {
       return await this.optionsCaching.setCachedOptions();
     }
   };
+
+  // 옵션 삭제
+  deleteOption = async (id) => {
+    const deleteOption = await this.optionRepository.deleteOption({ id });
+
+    if (deleteOption) {
+      return await this.optionsCaching.setCachedOptions();
+    }
+  };
 }
 
 module.exports = OptionService;

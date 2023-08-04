@@ -16,6 +16,7 @@ module.exports = {
           model: 'Options',
           key: 'id',
         },
+        onDelete: 'CASCADE',
       },
       name: {
         allowNull: false,
