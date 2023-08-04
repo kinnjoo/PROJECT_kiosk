@@ -36,7 +36,7 @@ class ItemService {
       throw new MakeError(400, '존재하지 않는 옵션입니다.');
     }
 
-    return null;
+    return;
   };
 
   // 상품 추가 API
@@ -46,41 +46,48 @@ class ItemService {
     return true;
   };
 
+  // 상품 리스트 조회(전체) 유효성 검증
+  validationfindAllItems = async (pageSize, pageNum) => {
+    if (isNaN(pageSize) || isNaN(pageNum) || pageSize < 1 || pageNum < 1) {
+      return { pageSize: 10, pageNum: 1 };
+    }
+    return { pageSize, pageNum };
+  };
+
   // 상품 리스트 조회(전체)
   findAllItemsWithPagination = async (pageSize, pageNum) => {
-    if (isNaN(pageSize) || isNaN(pageNum) || pageSize < 1 || pageNum < 1) {
-      (pageSize = 10), (pageNum = 1);
-    }
+    const pagination = await this.validationfindAllItems(pageSize, pageNum);
 
     const itemList = await this.itemRepository.findAllItemsWithPagination(
-      pageSize,
-      pageNum
+      pagination
     );
 
     return itemList;
   };
 
   // 상품 타입별 조회 유효성 검증
-  validationFindAllItemsByType = async (type) => {
+  validationFindAllItemsByType = async (pageSize, pageNum, type) => {
     const values = Object.values(Enum.itemType);
     if (!type || !values.includes(type)) {
       throw new MakeError(400, '알맞은 상품 타입을 선택해주세요.');
     }
 
-    return null;
+    if (isNaN(pageSize) || isNaN(pageNum) || pageSize < 1 || pageNum < 1) {
+      return { pageSize: 10, pageNum: 1 };
+    }
+    return { pageSize, pageNum };
   };
 
   // 상품 리스트 조회(타입별)
   findAllItemsByTypeWithPagination = async (pageSize, pageNum, type) => {
-    if (isNaN(pageSize) || isNaN(pageNum) || pageSize < 1 || pageNum < 1) {
-      (pageSize = 10), (pageNum = 1);
-    }
-
-    await this.validationFindAllItemsByType(type);
-
-    const itemList = await this.itemRepository.findAllItemsByTypeWithPagination(
+    const pagination = await this.validationFindAllItemsByType(
       pageSize,
       pageNum,
+      type
+    );
+
+    const itemList = await this.itemRepository.findAllItemsByTypeWithPagination(
+      pagination,
       type
     );
 
@@ -101,7 +108,7 @@ class ItemService {
       throw new MakeError(400, '현재 수량이 남아있습니다. 삭제하시겠습니까?');
     }
 
-    return null;
+    return;
   };
 
   // 상품 삭제
@@ -128,7 +135,7 @@ class ItemService {
       throw new MakeError(400, '잘못된 id 값입니다.');
     }
 
-    return null;
+    return;
   };
 
   // 상품 삭제(item의 amount가 0이 아닐 경우)
@@ -160,7 +167,7 @@ class ItemService {
       throw new MakeError(400, '잘못된 id 값입니다.');
     }
 
-    return null;
+    return;
   };
 
   // 상품 수정

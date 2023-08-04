@@ -92,7 +92,7 @@ class ItemController {
         answer
       );
 
-      if (!deleteItemData) {
+      if (deleteItemData === false) {
         return res.status(200).json({ message: '상품 삭제를 취소하였습니다.' });
       }
       return res.status(200).json({ message: '상품을 삭제하였습니다.' });
