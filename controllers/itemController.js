@@ -109,9 +109,9 @@ class ItemController {
   modifyItem = async (req, res) => {
     try {
       const { id } = req.params;
-      const { name, price } = req.body;
+      const { optionId, name, price } = req.body;
 
-      await this.itemService.modifyItem(id, name, price);
+      await this.itemService.modifyItem(id, optionId, name, price);
       return res.status(200).json({ message: '상품을 수정했습니다.' });
     } catch (err) {
       if (err instanceof MakeError) {

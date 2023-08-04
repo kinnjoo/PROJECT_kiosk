@@ -164,9 +164,9 @@ class ItemService {
   };
 
   // 상품 수정
-  modifyItem = async (id, name, price) => {
-    await this.validationModifyItem(id, name, price);
-    await this.itemRepository.modifyItemById({ name, price }, { id });
+  modifyItem = async (id, optionId, name, price) => {
+    await this.validationModifyItem(id, optionId, name, price);
+    await this.itemRepository.modifyItemById({ optionId, name, price }, { id });
     return true;
   };
 }
