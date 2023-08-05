@@ -2,6 +2,10 @@ const { Items, OrderItems, sequelize } = require('../models');
 const { Transaction } = require('sequelize');
 
 class OrderItemRepository {
+  // DB에서 item 데이터 찾기
+  findOneItemByCondition = async (condition) =>
+    await Items.findOne({ where: condition });
+
   // 상품 발주
   makeOrder = async (makeOrderData) => await OrderItems.create(makeOrderData);
 
