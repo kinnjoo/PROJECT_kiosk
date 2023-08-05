@@ -1,4 +1,4 @@
-const { Options, Items } = require('../models');
+const { Options } = require('../models');
 
 class OptionRepository {
   // 옵션 추가
