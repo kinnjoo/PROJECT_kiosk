@@ -31,12 +31,12 @@ class OrderCustomerController {
       const { orderCustomerId } = req.params;
       const { orderState } = req.body;
 
-      const cancelOrderCustomer =
+      const orderCustomerData =
         await this.orderCustomerService.modifyOrderCustomer(
           orderCustomerId,
           orderState
         );
-      if (!cancelOrderCustomer) {
+      if (orderCustomerData === false) {
         return res.status(200).json({ message: '주문을 취소하였습니다.' });
       }
       return res.status(200).json({ message: '주문을 완료하였습니다.' });

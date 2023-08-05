@@ -1,10 +1,11 @@
 const OrderCustomerRepository = require('../repositories/orderCustomerRepository.js');
-const ItemRepository = require('../repositories/itemRepository.js');
 const MakeError = require('../utils/makeErrorUtil.js');
+
+const { sequelize } = require('../models');
+const { Transaction } = require('sequelize');
 
 class OrderCustomerService {
   orderCustomerRepository = new OrderCustomerRepository();
-  itemRepository = new ItemRepository();
 
   // 상품 주문 유효성 검증
   validationMakeOrderCustomer = async (itemId, amount) => {
@@ -12,50 +13,72 @@ class OrderCustomerService {
       throw new MakeError(400, '수량을 입력해주세요');
     }
 
-    const findItemData = await this.itemRepository.findOneItemByCondition({
-      id: itemId,
-    });
-
-    if (!findItemData) {
-      throw new MakeError(400, '존재 하지 않는 상품입니다.');
+    if (!itemId) {
+      throw new MakeError(400, '주문할 상품을 입력해주세요');
     }
 
-    return null;
+    return;
   };
 
   // 상품 주문
   makeOrderCustomer = async (order) => {
-    const orderCustomerId =
-      await this.orderCustomerRepository.makeOrderCustomer();
+    let totalPrice = 0;
 
-    for (let data = 0; data < order.length; data++) {
-      const itemId = order[data].itemId;
-      const amount = order[data].amount;
+    const transaction = await sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
 
-      await this.validationMakeOrderCustomer(itemId, amount);
+    try {
+      const orderCustomerData =
+        await this.orderCustomerRepository.makeOrderCustomer(transaction);
+      const orderCustomerId = orderCustomerData.id;
 
-      const price = await this.orderCustomerRepository.findOneItemPrice(
-        itemId,
-        amount
-      );
+      for (let data = 0; data < order.length; data++) {
+        const itemId = order[data].itemId;
+        const amount = order[data].amount;
 
-      await this.orderCustomerRepository.makeItemOrderCustomer(
-        itemId,
-        orderCustomerId,
-        amount,
-        price
-      );
+        await this.validationMakeOrderCustomer(itemId, amount);
+
+        const findItemData =
+          await this.orderCustomerRepository.findOneItemByCondition({
+            id: itemId,
+          });
+
+        if (!findItemData) {
+          throw new MakeError(400, '존재 하지 않는 상품입니다.');
+        }
+
+        if (findItemData.amount < amount) {
+          throw new MakeError(
+            400,
+            '주문 수량이 현재 재고보다 많아 주문이 불가합니다.'
+          );
+        }
+
+        const price = findItemData.price;
+
+        await this.orderCustomerRepository.makeItemOrderCustomer(
+          itemId,
+          orderCustomerId,
+          amount,
+          price,
+          transaction
+        );
+
+        totalPrice += price * amount;
+      }
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
     }
-
-    const totalPrice = await this.orderCustomerRepository.findTotalPrice(
-      orderCustomerId
-    );
 
     return totalPrice;
   };
 
   // 상품 주문 수정 유효성 검증
-  validationModifyOrderCustomer = async (orderCustomerId, orderState) => {
+  validationModifyOrderCustomer = async (orderState) => {
     if (!orderState) {
       throw new MakeError(400, '주문 상태를 입력해주세요');
     }
@@ -63,6 +86,13 @@ class OrderCustomerService {
     if (orderState !== '완료' && orderState !== '취소') {
       throw new MakeError(400, '알맞은 주문 상태를 입력해주세요');
     }
+
+    return;
+  };
+
+  // 상품 주문 수정
+  modifyOrderCustomer = async (orderCustomerId, orderState) => {
+    await this.validationModifyOrderCustomer(orderState);
 
     const findOrderCustomerData =
       await this.orderCustomerRepository.findOneOrderCustomerById(
@@ -77,21 +107,13 @@ class OrderCustomerService {
       throw new MakeError(400, '완료된 주문은 취소할 수 없습니다');
     }
 
-    return null;
-  };
-
-  // 상품 주문 수정
-  modifyOrderCustomer = async (orderCustomerId, orderState) => {
-    await this.validationModifyOrderCustomer(orderCustomerId, orderState);
-
     if (orderState === '완료') {
       await this.orderCustomerRepository.modifyOrderCustomer(orderCustomerId);
-    }
-
-    const cancelOrderCustomer =
+      return true;
+    } else if (findOrderCustomerData.state === 0 && orderState === '취소') {
       await this.orderCustomerRepository.cancelOrderCustomer(orderCustomerId);
-
-    return cancelOrderCustomer;
+      return false;
+    }
   };
 }
 
