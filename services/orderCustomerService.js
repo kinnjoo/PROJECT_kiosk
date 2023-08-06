@@ -77,7 +77,7 @@ class OrderCustomerService {
     return totalPrice;
   };
 
-  // 상품 주문 수정 유효성 검증
+  // 상품 주문 수정 유효성 검증 - 주문 취소 성공시
   validationModifyOrderCustomer = async (orderState) => {
     if (!orderState) {
       throw new MakeError(400, '주문 상태를 입력해주세요');
@@ -94,25 +94,69 @@ class OrderCustomerService {
   modifyOrderCustomer = async (orderCustomerId, orderState) => {
     await this.validationModifyOrderCustomer(orderState);
 
-    const findOrderCustomerData =
-      await this.orderCustomerRepository.findOneOrderCustomerById(
-        orderCustomerId
-      );
+    const transaction = await sequelize.transaction({
+      isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
+    });
 
-    if (!findOrderCustomerData) {
-      throw new MakeError(400, '존재 하지 않는 주문 내역입니다.');
-    }
+    try {
+      const findOrderCustomerData =
+        await this.orderCustomerRepository.findOneOrderCustomerById(
+          orderCustomerId,
+          { transaction }
+        );
 
-    if (findOrderCustomerData.state === 1 && orderState === '취소') {
-      throw new MakeError(400, '완료된 주문은 취소할 수 없습니다');
-    }
+      if (!findOrderCustomerData) {
+        throw new MakeError(400, '존재 하지 않는 주문 내역입니다.');
+      }
 
-    if (orderState === '완료') {
-      await this.orderCustomerRepository.modifyOrderCustomer(orderCustomerId);
-      return true;
-    } else if (findOrderCustomerData.state === 0 && orderState === '취소') {
-      await this.orderCustomerRepository.cancelOrderCustomer(orderCustomerId);
-      return false;
+      if (findOrderCustomerData.state === 1 && orderState === '취소') {
+        throw new MakeError(400, '완료된 주문은 취소할 수 없습니다');
+      }
+
+      if (orderState === '완료') {
+        await this.orderCustomerRepository.modifyOrderCustomerState(
+          orderCustomerId,
+          { transaction }
+        );
+
+        const itemOrderCustomersData =
+          await this.orderCustomerRepository.findAllOrderByOrderCustomerId(
+            orderCustomerId,
+            { transaction }
+          );
+
+        for (let data = 0; data < itemOrderCustomersData.length; data++) {
+          const orderItemId = itemOrderCustomersData[data].itemId;
+          const orderAmount = itemOrderCustomersData[data].amount;
+          const itemAmount = itemOrderCustomersData[data]['Item.amount'];
+
+          await this.orderCustomerRepository.modifyAmountWhenOrderCompleted(
+            orderItemId,
+            itemAmount,
+            orderAmount,
+            { transaction }
+          );
+        }
+
+        return true;
+      } else if (findOrderCustomerData.state === 0 && orderState === '취소') {
+        await this.orderCustomerRepository.deleteOrderCustomerWhenCanceled(
+          orderCustomerId,
+          { transaction }
+        );
+
+        await this.orderCustomerRepository.deleteItemOrderCustomerWhenCanceled(
+          orderCustomerId,
+          { transaction }
+        );
+
+        return false;
+      }
+
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
     }
   };
 }
