@@ -8,10 +8,23 @@ class OptionsCaching {
   setCachedOptions = async () => {
     try {
       const options = await this.optionRepository.getAllOptions();
-      this.cache.set('options', options);
+      for (const option of options) {
+        this.cache.set(`cacheKey${option.id}`, option);
+      }
       console.log('옵션 데이터 캐싱 성공');
     } catch (err) {
       console.log('옵션 데이터 캐싱 실패', err);
+      throw err;
+    }
+  };
+
+  getCachedOption = (optionId) => {
+    try {
+      const cachedOption = this.cache.get(`cacheKey${optionId}`);
+      console.log('옵션 데이터 GET 성공');
+      return cachedOption;
+    } catch (err) {
+      console.log('옵션 데이터 GET 실패', err);
       throw err;
     }
   };

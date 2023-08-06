@@ -1,22 +1,24 @@
 const ItemRepository = require('../repositories/itemRepository.js');
+const OptionsCaching = require('../cache.js');
 const MakeError = require('../utils/makeErrorUtil.js');
 const Enum = require('../config/enum.js');
 
 class ItemService {
   itemRepository = new ItemRepository();
+  optionsCaching = new OptionsCaching();
 
   // 상품 추가 유효성 검증
   validationMakeItem = async (optionId, name, price, type) => {
-    if (!optionId) {
-      throw new MakeError(400, '상품의 옵션을 입력해주세요');
+    if (!optionId || isNaN(optionId) || optionId < 1) {
+      throw new MakeError(400, '잘못된 옵션 id입니다.');
     }
 
     if (!name) {
       throw new MakeError(400, '상품 이름을 입력해주세요.');
     }
 
-    if (!price) {
-      throw new MakeError(400, '상품 가격을 입력해주세요.');
+    if (!price || isNaN(price) || price < 1) {
+      throw new MakeError(400, '알맞은 상품 가격을 입력해주세요.');
     }
 
     const values = Object.values(Enum.itemType);
@@ -24,16 +26,16 @@ class ItemService {
       throw new MakeError(400, '알맞은 상품 타입을 선택해주세요.');
     }
 
+    const findOption = await this.optionsCaching.getCachedOption(optionId);
+    if (!findOption) {
+      throw new MakeError(400, '존재하지 않는 옵션입니다.');
+    }
+
     const findItemName = await this.itemRepository.findOneItemByCondition({
       name,
     });
     if (findItemName) {
       throw new MakeError(400, '이미 존재하는 상품 이름입니다.');
-    }
-
-    const findOption = await this.itemRepository.findOneOptionById(optionId);
-    if (!findOption) {
-      throw new MakeError(400, '존재하지 않는 옵션입니다.');
     }
 
     return;

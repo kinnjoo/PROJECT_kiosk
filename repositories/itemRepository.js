@@ -8,10 +8,6 @@ class ItemRepository {
   // 상품 추가
   makeItem = async (makeItemData) => await Items.create(makeItemData);
 
-  // optionId 찾기
-  findOneOptionById = async (optionId) =>
-    await Options.findOne({ where: { id: optionId } });
-
   // 상품 리스트 조회(전체)
   findAllItemsWithPagination = async (pagination) => {
     const pageSize = pagination.pageSize;
