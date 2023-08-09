@@ -101,8 +101,7 @@ class OrderCustomerService {
     try {
       const findOrderCustomerData =
         await this.orderCustomerRepository.findOneOrderCustomerById(
-          orderCustomerId,
-          { transaction }
+          orderCustomerId
         );
 
       if (!findOrderCustomerData) {
@@ -116,13 +115,12 @@ class OrderCustomerService {
       if (orderState === '완료') {
         await this.orderCustomerRepository.modifyOrderCustomerState(
           orderCustomerId,
-          { transaction }
+          transaction
         );
 
         const itemOrderCustomersData =
           await this.orderCustomerRepository.findAllOrderByOrderCustomerId(
-            orderCustomerId,
-            { transaction }
+            orderCustomerId
           );
 
         for (let data = 0; data < itemOrderCustomersData.length; data++) {
@@ -134,7 +132,7 @@ class OrderCustomerService {
             orderItemId,
             itemAmount,
             orderAmount,
-            { transaction }
+            transaction
           );
         }
 
@@ -142,12 +140,12 @@ class OrderCustomerService {
       } else if (findOrderCustomerData.state === 0 && orderState === '취소') {
         await this.orderCustomerRepository.deleteOrderCustomerWhenCanceled(
           orderCustomerId,
-          { transaction }
+          transaction
         );
 
         await this.orderCustomerRepository.deleteItemOrderCustomerWhenCanceled(
           orderCustomerId,
-          { transaction }
+          transaction
         );
 
         return false;

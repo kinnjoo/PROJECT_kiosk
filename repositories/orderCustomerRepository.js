@@ -27,10 +27,11 @@ class OrderCustomerRepository {
     await OrderCustomers.findOne({ where: { id: orderCustomerId }, raw: true });
 
   // 상품 주문 수정 - 주문 완료시 OrderCustomers.state: true
-  modifyOrderCustomerState = async (orderCustomerId) =>
+  modifyOrderCustomerState = async (orderCustomerId, transaction) =>
     await OrderCustomers.update(
       { state: true },
-      { where: { id: orderCustomerId } }
+      { where: { id: orderCustomerId } },
+      { transaction }
     );
 
   // orderCustomerId별 상품 주문 데이터 찾기
@@ -53,21 +54,29 @@ class OrderCustomerRepository {
   modifyAmountWhenOrderCompleted = async (
     orderItemId,
     itemAmount,
-    orderAmount
+    orderAmount,
+    transaction
   ) => {
     await Items.update(
       { amount: itemAmount - orderAmount },
-      { where: { id: orderItemId } }
+      { where: { id: orderItemId } },
+      { transaction }
     );
   };
 
   // 상품 주문 수정 - 주문 취소 성공시 OrderCustomer 데이터 삭제
-  deleteOrderCustomerWhenCanceled = async (orderCustomerId) =>
-    await OrderCustomers.destroy({ where: { id: orderCustomerId } });
+  deleteOrderCustomerWhenCanceled = async (orderCustomerId, transaction) =>
+    await OrderCustomers.destroy(
+      { where: { id: orderCustomerId } },
+      { transaction }
+    );
 
   // 상품 주문 수정 - 주문 취소 성공시 ItemOrderCustomer 데이터 삭제
-  deleteItemOrderCustomerWhenCanceled = async (orderCustomerId) =>
-    await ItemOrderCustomers.destroy({ where: { orderCustomerId } });
+  deleteItemOrderCustomerWhenCanceled = async (orderCustomerId, transaction) =>
+    await ItemOrderCustomers.destroy(
+      { where: { orderCustomerId } },
+      { transaction }
+    );
 }
 
 module.exports = OrderCustomerRepository;
